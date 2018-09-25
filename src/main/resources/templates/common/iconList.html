@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body>
+	<div th:fragment="iconList">
+		<div class="modal fade" id="iconListModal" tabindex="-1" role="dialog"
+			aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" style="color: #337ab7;">图标选择</h4>
+					</div>
+					<div class="modal-body modal-icon-list">
+						<i class="icon ion-ionic"></i> <i class="icon ion-arrow-up-a"></i>
+						<i class="icon ion-arrow-right-a"></i> <i
+							class="icon ion-arrow-down-a"></i> <i
+							class="icon ion-arrow-left-a"></i> <i class="icon ion-arrow-up-b"></i>
+						<i class="icon ion-arrow-right-b"></i> <i
+							class="icon ion-arrow-down-b"></i> <i
+							class="icon ion-arrow-left-b"></i> <i class="icon ion-arrow-up-c"></i>
+						<i class="icon ion-arrow-right-c"></i> <i
+							class="icon ion-arrow-down-c"></i> <i
+							class="icon ion-arrow-left-c"></i> <i
+							class="icon ion-arrow-return-right"></i> <i
+							class="icon ion-arrow-return-left"></i> <i
+							class="icon ion-arrow-swap"></i> <i class="icon ion-arrow-shrink"></i>
+						<i class="icon ion-arrow-expand"></i> <i
+							class="icon ion-arrow-move"></i> <i class="icon ion-arrow-resize"></i>
+						<i class="icon ion-chevron-up"></i> <i
+							class="icon ion-chevron-right"></i> <i
+							class="icon ion-chevron-down"></i> <i
+							class="icon ion-chevron-left"></i> <i
+							class="icon ion-navicon-round"></i> <i class="icon ion-navicon"></i>
+						<i class="icon ion-drag"></i> <i class="icon ion-log-in"></i> <i
+							class="icon ion-log-out"></i> <i class="icon ion-checkmark-round"></i>
+						<i class="icon ion-checkmark"></i> <i
+							class="icon ion-checkmark-circled"></i> <i
+							class="icon ion-close-round"></i> <i class="icon ion-close"></i>
+						<i class="icon ion-close-circled"></i> <i
+							class="icon ion-plus-round"></i> <i class="icon ion-plus"></i> <i
+							class="icon ion-plus-circled"></i> <i
+							class="icon ion-minus-round"></i> <i class="icon ion-minus"></i>
+						<i class="icon ion-minus-circled"></i> <i
+							class="icon ion-information"></i> <i
+							class="icon ion-informaticon ion-circled"></i> <i
+							class="icon ion-help"></i> <i class="icon ion-help-circled"></i>
+						<i class="icon ion-backspace-outline"></i> <i
+							class="icon ion-backspace"></i> <i class="icon ion-help-buoy"></i>
+						<i class="icon ion-asterisk"></i> <i class="icon ion-alert"></i> <i
+							class="icon ion-alert-circled"></i> <i class="icon ion-refresh"></i>
+						<i class="icon ion-loop"></i> <i class="icon ion-shuffle"></i> <i
+							class="icon ion-home"></i> <i class="icon ion-search"></i> <i
+							class="icon ion-flag"></i> <i class="icon ion-star"></i> <i
+							class="icon ion-heart"></i> <i class="icon ion-heart-broken"></i>
+						<i class="icon ion-gear-a"></i> <i class="icon ion-gear-b"></i> <i
+							class="icon ion-toggle-filled"></i> <i class="icon ion-toggle"></i>
+						<i class="icon ion-settings"></i> <i class="icon ion-wrench"></i>
+						<i class="icon ion-hammer"></i> <i class="icon ion-edit"></i> <i
+							class="icon ion-trash-a"></i> <i class="icon ion-trash-b"></i> <i
+							class="icon ion-document"></i> <i class="icon ion-document-text"></i>
+						<i class="icon ion-clipboard"></i> <i class="icon ion-scissors"></i>
+						<i class="icon ion-funnel"></i> <i class="icon ion-bookmark"></i>
+						<i class="icon ion-email"></i> <i class="icon ion-email-unread"></i>
+						<i class="icon ion-folder"></i> <i class="icon ion-filing"></i> <i
+							class="icon ion-archive"></i> <i class="icon ion-reply"></i> <i
+							class="icon ion-reply-all"></i> <i class="icon ion-forward"></i>
+						<i class="icon ion-share"></i> <i class="icon ion-paper-airplane"></i>
+						<i class="icon ion-link"></i> <i class="icon ion-paperclip"></i> <i
+							class="icon ion-compose"></i> <i class="icon ion-briefcase"></i>
+						<i class="icon ion-medkit"></i> <i class="icon ion-at"></i> <i
+							class="icon ion-pound"></i> <i class="icon ion-quote"></i> <i
+							class="icon ion-cloud"></i> <i class="icon ion-upload"></i> <i
+							class="icon ion-more"></i> <i class="icon ion-grid"></i> <i
+							class="icon ion-calendar"></i> <i class="icon ion-clock"></i> <i
+							class="icon ion-compass"></i> <i class="icon ion-pinpoint"></i> <i
+							class="icon ion-pin"></i> <i class="icon ion-navigate"></i> <i
+							class="icon ion-location"></i> <i class="icon ion-map"></i> <i
+							class="icon ion-lock-combination"></i> <i class="icon ion-locked"></i>
+						<i class="icon ion-unlocked"></i> <i class="icon ion-key"></i> <i
+							class="icon ion-arrow-graph-up-right"></i> <i
+							class="icon ion-arrow-graph-down-right"></i> <i
+							class="icon ion-arrow-graph-up-left"></i> <i
+							class="icon ion-arrow-graph-down-left"></i> <i
+							class="icon ion-stats-bars"></i> <i
+							class="icon ion-connecticon ion-bars"></i> <i
+							class="icon ion-pie-graph"></i> <i class="icon ion-chatbubble"></i>
+						<i class="icon ion-chatbubble-working"></i> <i
+							class="icon ion-chatbubbles"></i> <i class="icon ion-chatbox"></i>
+						<i class="icon ion-chatbox-working"></i> <i
+							class="icon ion-chatboxes"></i> <i class="icon ion-person"></i> <i
+							class="icon ion-person-add"></i> <i
+							class="icon ion-person-stalker"></i> <i class="icon ion-woman"></i>
+						<i class="icon ion-man"></i> <i class="icon ion-female"></i> <i
+							class="icon ion-male"></i> <i class="icon ion-transgender"></i> <i
+							class="icon ion-fork"></i> <i class="icon ion-knife"></i> <i
+							class="icon ion-spoon"></i> <i class="icon ion-soup-can-outline"></i>
+						<i class="icon ion-soup-can"></i> <i class="icon ion-beer"></i> <i
+							class="icon ion-wineglass"></i> <i class="icon ion-coffee"></i> <i
+							class="icon ion-icecream"></i> <i class="icon ion-pizza"></i> <i
+							class="icon ion-power"></i> <i class="icon ion-mouse"></i> <i
+							class="icon ion-battery-full"></i> <i
+							class="icon ion-battery-half"></i> <i
+							class="icon ion-battery-low"></i> <i
+							class="icon ion-battery-empty"></i> <i
+							class="icon ion-battery-charging"></i> <i class="icon ion-wifi"></i>
+						<i class="icon ion-bluetooth"></i> <i class="icon ion-calculator"></i>
+						<i class="icon ion-camera"></i> <i class="icon ion-eye"></i> <i
+							class="icon ion-eye-disabled"></i> <i class="icon ion-flash"></i>
+						<i class="icon ion-flash-off"></i> <i class="icon ion-qr-scanner"></i>
+						<i class="icon ion-image"></i> <i class="icon ion-images"></i> <i
+							class="icon ion-wand"></i> <i class="icon ion-contrast"></i> <i
+							class="icon ion-aperture"></i> <i class="icon ion-crop"></i> <i
+							class="icon ion-easel"></i> <i class="icon ion-paintbrush"></i> <i
+							class="icon ion-paintbucket"></i> <i class="icon ion-monitor"></i>
+						<i class="icon ion-laptop"></i> <i class="icon ion-ipad"></i> <i
+							class="icon ion-iphone"></i> <i class="icon ion-ipod"></i> <i
+							class="icon ion-printer"></i> <i class="icon ion-usb"></i> <i
+							class="icon ion-outlet"></i> <i class="icon ion-bug"></i> <i
+							class="icon ion-code"></i> <i class="icon ion-code-working"></i>
+						<i class="icon ion-code-download"></i> <i
+							class="icon ion-fork-repo"></i> <i class="icon ion-network"></i>
+						<i class="icon ion-pull-request"></i> <i class="icon ion-merge"></i>
+						<i class="icon ion-xbox"></i> <i class="icon ion-playstation"></i>
+						<i class="icon ion-steam"></i> <i
+							class="icon ion-closed-captioning"></i> <i
+							class="icon ion-videocamera"></i> <i class="icon ion-film-marker"></i>
+						<i class="icon ion-disc"></i> <i class="icon ion-headphone"></i> <i
+							class="icon ion-music-note"></i> <i class="icon ion-radio-waves"></i>
+						<i class="icon ion-speakerphone"></i> <i class="icon ion-mic-a"></i>
+						<i class="icon ion-mic-b"></i> <i class="icon ion-mic-c"></i> <i
+							class="icon ion-volume-high"></i> <i
+							class="icon ion-volume-medium"></i> <i
+							class="icon ion-volume-low"></i> <i class="icon ion-volume-mute"></i>
+						<i class="icon ion-levels"></i> <i class="icon ion-play"></i> <i
+							class="icon ion-pause"></i> <i class="icon ion-stop"></i> <i
+							class="icon ion-record"></i> <i class="icon ion-skip-forward"></i>
+						<i class="icon ion-skip-backward"></i> <i class="icon ion-eject"></i>
+						<i class="icon ion-bag"></i> <i class="icon ion-card"></i> <i
+							class="icon ion-cash"></i> <i class="icon ion-pricetag"></i> <i
+							class="icon ion-pricetags"></i> <i class="icon ion-thumbsup"></i>
+						<i class="icon ion-thumbsdown"></i> <i
+							class="icon ion-happy-outline"></i> <i class="icon ion-happy"></i>
+						<i class="icon ion-sad-outline"></i> <i class="icon ion-sad"></i>
+						<i class="icon ion-bowtie"></i> <i class="icon ion-tshirt-outline"></i>
+						<i class="icon ion-tshirt"></i> <i class="icon ion-trophy"></i> <i
+							class="icon ion-podium"></i> <i class="icon ion-ribbon-a"></i> <i
+							class="icon ion-ribbon-b"></i> <i class="icon ion-university"></i>
+						<i class="icon ion-magnet"></i> <i class="icon ion-beaker"></i> <i
+							class="icon ion-erlenmeyer-flask"></i> <i class="icon ion-egg"></i>
+						<i class="icon ion-earth"></i> <i class="icon ion-planet"></i> <i
+							class="icon ion-lightbulb"></i> <i class="icon ion-cube"></i> <i
+							class="icon ion-leaf"></i> <i class="icon ion-waterdrop"></i> <i
+							class="icon ion-flame"></i> <i class="icon ion-fireball"></i> <i
+							class="icon ion-bonfire"></i> <i class="icon ion-umbrella"></i> <i
+							class="icon ion-nuclear"></i> <i class="icon ion-no-smoking"></i>
+						<i class="icon ion-thermometer"></i> <i
+							class="icon ion-speedometer"></i> <i class="icon ion-model-s"></i>
+						<i class="icon ion-plane"></i> <i class="icon ion-jet"></i> <i
+							class="icon ion-load-a"></i> <i class="icon ion-load-b"></i> <i
+							class="icon ion-load-c"></i> <i class="icon ion-load-d"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

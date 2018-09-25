@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>菜单创建</title>
+</head>
+<body>
+	<!-- 主体内容 start -->
+	<div layout:fragment="content">
+		<div style="float: none;"
+			class="col-lg-8 col-md-8 col-xs-12 col-lg-offset-2 col-md-offset-2 pt">
+			<h4>菜单创建</h4>
+			<form class="form-signin" action="/menu/submit" method="post" id="menuForm">
+				<div class="form-group has-feedback">
+					<strong><font color="red">*</font>编码：</strong> <input type="text"
+						id="menuCode" name="menuCode" class="form-control"
+						required="required">
+				</div>
+				<div class="form-group has-feedback">
+					<strong><font color="red">*</font>名称：</strong> <input type="text"
+						id="menuName" name="menuName" class="form-control"
+						required="required">
+
+				</div>
+				<div class="form-group has-feedback">
+					<strong><font color="red">*</font>所属菜单组：</strong> <select
+						name="menuGroup" id="menuGroup" class="form-control"
+						required="required">
+						<option th:each="group:${groupList}"
+							th:selected="${groupCode} eq ${group.groupCode}"
+							th:value="${group.groupCode}" th:text="${group.groupName}"></option>
+					</select>
+				</div>
+				<div class="form-group has-feedback">
+					<strong>图标：</strong>
+					<button type="button" onclick="choseIcon()" class="btn btn-primary" id="choseIconBtn">选择</button>
+					<i id="iconImg" onclick="choseIcon()" style="display:none;font-size:30px;cursor:pointer;"></i>
+					<input type="hidden" id="icon" name="icon" class="form-control" required="required">
+				</div>
+				<div class="form-group has-feedback">
+					<strong><font color="red">*</font>地址：</strong> <input type="text"
+						id="url" name="url" class="form-control" required="required">
+				</div>
+				<div class="form-group has-feedback">
+					<strong><font color="red">*</font>状态：</strong> <select
+						name="status" id="status" class="form-control" required="required">
+						<option value="N">启用</option>
+						<option value="D">禁用</option>
+					</select>
+				</div>
+				<div class="form-group has-feedback">
+					<strong><font color="red">*</font>序号：</strong> <input type="text"
+						id="sort" name="sort" class="form-control" required="required">
+				</div>
+				<div>
+					<button type="button" id="submit"
+						class="btn btn-primary btn-block btn-flat">提交</button>
+					<div style="text-align: right; margin: 10px auto; cursor:pointer;">
+						<a onclick="back()">返回</a>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div th:include="common/iconList :: iconList"></div>
+		<script type="text/javascript">
+			function submitEnable() {
+				if ($("#menuCode").val() == "" || $("#menuName").val() == ""
+						|| $("#status").val() == ""||$("#menuGroup").val() == ""
+						|| $("#sort").val() == ""||$("#url").val() == "") {
+					$('#submit').attr('disabled', "true");
+				} else {
+					$('#submit').removeAttr("disabled");
+				}
+			}
+			function choseIcon() {
+				$("#iconListModal").modal('show');
+			}
+			function back() {
+				history.go(-1);
+			}
+			$(function() {
+				submitEnable();
+				$("#submit")
+						.click(
+								function() {
+									$("#loadingHint").html("正在创建菜单...");
+									$("#loadingModal").modal('show');
+									$
+											.ajax({
+												async : false,
+												type : "POST",
+												url : $("#menuForm").attr(
+														"action"),
+												data : {
+													menuCode : $("#menuCode").val(),
+													menuName : $("#menuName").val(),
+													menuGroup : $("#menuGroup").val(),
+													url : $("#url").val(),
+													icon : $("#icon").val(),
+													status : $("#status").val(),
+													sort : $("#sort").val(),
+												},
+												dataType : "text",
+												success : function(data) {
+													var obj = eval('(' + data
+															+ ')');
+													if (obj.code == "success") {
+														$("#resultHint").html(
+																"设置好哒！");
+														$("#hintConfirm")
+																.click(
+																		function() {
+																			back();
+																		});
+													} else {
+														$("#resultHint").html(
+																obj.value);
+													}
+													$("#resultHintModal")
+															.modal('show');
+													$("#loadingModal").modal(
+															'hide');
+												},
+												error : function() {
+													$("#resultHint").html(
+															"好像哪里不对啊,一会再试试？");
+													$("#resultHintModal")
+															.modal('show');
+													$("#loadingModal").modal(
+															'hide');
+												}
+											})
+								});
+				$("#menuName").keyup(function() {
+					submitEnable();
+				});
+				$("#menuCode").keyup(function() {
+					submitEnable();
+				});
+				$("#url").keyup(function() {
+					submitEnable();
+				});
+				$("#sort").keyup(function() {
+					submitEnable();
+				});
+				$(".modal-icon-list").find("i").each(function(){
+					$(this).click(function(){
+						var className=$(this).prop("className");
+						$("#iconImg").removeClass();
+						$("#iconImg").addClass(className);
+						$("#iconImg").show();
+						$("#choseIconBtn").hide();
+						className = className.replace("icon ","");
+						$("#icon").val(className);
+						$("#iconListModal").modal('hide');
+					});
+				});
+			})
+		</script>
+	</div>
+</body>
+</html>

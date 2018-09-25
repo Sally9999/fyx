@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/layout">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>注册</title>
+<script th:src="@{/js/md5.js}"></script>
+<link rel="stylesheet" th:href="@{/css/fyxw/login.css}">
+</head>
+<body>
+	<!-- 主体内容 start -->
+	<div layout:fragment="content" class="height100">
+		<div
+			class="col-lg-4 col-md-4 col-xs-8 col-lg-offset-4 col-md-offset-4 col-xs-offset-2 vcenter">
+			<form class="form-signin" action="/createAccount" method="post"
+				id="registForm">
+				<div class="form-group has-feedback">
+					<input type="text" id="username" name="username"
+						class="form-control" required="required" placeholder="请输入用户名"
+						th:value="${username}"> <span
+						class="glyphicon glyphicon-user form-control-feedback"></span>
+				</div>
+				<div class="form-group has-feedback">
+					<input type="password" id="password" name="password"
+						class="form-control" required="required" placeholder="请输入密码">
+					<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+				</div>
+				<div class="form-group has-feedback">
+					<input type="password" id="confirm" name="confirm"
+						class="form-control" required="required" placeholder="请确认密码">
+					<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+					<input type="hidden" id="pwd" name="pwd" />
+				</div>
+				<div>
+					<div style="text-align: center; margin-bottom: 10px;">
+						<font color="red" th:text="${message}" id="message"></font>
+					</div>
+					<button type="button" id="submit"
+						class="btn btn-primary btn-block btn-flat">给个账号呗</button>
+					<div style="text-align: right; margin-top: 10px;">
+						<a href="/login">返回登录</a>
+					</div>
+				</div>
+			</form>
+		</div>
+		<script type="text/javascript">
+			function submitEnable() {
+				if ($("#username").val() == "" || $("#password").val() == ""
+						|| $("#confirm").val() == ""
+						|| $("#password").val() != $("#confirm").val()) {
+					$('#submit').attr('disabled', "true");
+				} else {
+					$('#submit').removeAttr("disabled");
+				}
+			}
+			function comparePwd() {
+				if ($("#password").val() != "" && $("#confirm").val() != ""
+						&& $("#password").val() != $("#confirm").val()) {
+					$("#message").html("两次密码不一样啊，让我怎么选...");
+				} else {
+					$("#message").html("");
+				}
+			}
+			$(function() {
+				submitEnable();
+				$("#submit")
+						.click(
+								function() {
+									$("#loadingHint").html("你说这账号给是不给呢...");
+									$("#loadingModal").modal('show');
+									$("#pwd")
+											.val(hex_md5($("#password").val()));
+									$
+											.ajax({
+												async : false,
+												type : "POST",
+												url : $("#registForm").attr(
+														"action"),
+												data : {
+													account : $("#username")
+															.val(),
+													pwd : $("#pwd").val()
+												},
+												dataType : "text",
+												success : function(data) {
+													var obj = eval('(' + data
+															+ ')');
+													if (obj.code == "success") {
+														$("#resultHint").html(
+																"欢迎加入，请前往登录");
+														$("#hintConfirm")
+																.click(
+																		function() {
+																			window.location.href = "/login?username="
+																					+ $(
+																							"#username")
+																							.val();
+																		});
+													} else {
+														$("#resultHint").html(
+																obj.value);
+													}
+													$("#resultHintModal")
+															.modal('show');
+													$("#loadingModal").modal(
+															'hide');
+												},
+												error : function() {
+													$("#resultHint").html(
+															"好像哪里不对啊,一会再试试？");
+													$("#resultHintModal")
+															.modal('show');
+													$("#loadingModal").modal(
+															'hide');
+												}
+											})
+								});
+				$("#username").keyup(function() {
+					submitEnable();
+				});
+				$("#password").keyup(function() {
+					submitEnable();
+				});
+				$("#confirm").keyup(function() {
+					submitEnable();
+				});
+				$("#password").blur(function() {
+					comparePwd();
+				});
+				$("#confirm").blur(function() {
+					comparePwd();
+				});
+			})
+		</script>
+	</div>
+</body>
+</html>

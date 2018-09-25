@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>缓存管理</title>
+</head>
+<body>
+	<!-- 主体内容 start -->
+	<div layout:fragment="content">
+		<div style="float: none;"
+			class="col-lg-8 col-md-8 col-xs-12 col-lg-offset-2 col-md-offset-2 pt">
+			<h4>缓存管理</h4>
+			<div class="row mt">
+				<div class="col-md-12 centered">
+					<div class="col-md-4 services-bordered" style="cursor: pointer;"
+						onclick="refreshMenu()">
+						<i class="icon ion-document large-icon"></i>
+						<h4>刷新当前用户菜单</h4>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			function refreshMenu() {
+				$("#loadingHint").html("刷新中,请稍等...");
+				$("#loadingModal").modal('show');
+				$.ajax({
+					async : false,
+					type : "POST",
+					url : "/system/cache/refreshMenu",
+					data : {},
+					dataType : "text",
+					success : function(data) {
+						var obj = eval('(' + data + ')');
+						if (obj.code == "success") {
+							$("#resultHint").html("好啦好啦，你再看看吧！");
+							$("#hintConfirm").click(function() {
+								window.location.reload();
+							});
+						} else {
+							$("#resultHint").html(obj.value);
+						}
+						$("#resultHintModal").modal('show');
+						$("#loadingModal").modal('hide');
+					},
+					error : function() {
+						$("#resultHint").html("好像哪里不对啊,一会再试试？");
+						$("#resultHintModal").modal('show');
+						$("#loadingModal").modal('hide');
+					}
+				})
+			}
+		</script>
+	</div>
+</body>
+</html>

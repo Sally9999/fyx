@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body>
+	<header th:fragment="header">
+		<div class="custom-navbar" style="height: 50px;">
+			<a href="/index" class="pull-left height100"> <img
+				src="/img/logo.png" class="height100"></img>
+			</a>
+			<div th:if="${session.SPRING_SECURITY_CONTEXT}"
+				class="menu-navbar pull-right"
+				th:object="${session.SPRING_SECURITY_CONTEXT.authentication.principal}">
+				<a class="fm-button nickNameStr" href="#" th:text="*{nickname}?:*{account}"></a>
+			</div>
+		</div>
+	</header>
+</body>
+</html>

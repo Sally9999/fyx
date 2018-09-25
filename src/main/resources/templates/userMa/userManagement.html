@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>用户管理</title>
+<link
+	href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css"
+	rel="stylesheet">
+<!-- bootstrap-table.min.js -->
+<script
+	src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+<!-- 引入中文语言包 -->
+<script
+	src="https://cdn.bootcss.com/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
+<!-- bootstrap tree view css -->
+<link th:href="@{/css/bootstrap-treeview.min.css}" rel="stylesheet">
+<!-- bootstrap tree view js -->
+<script th:src="@{/js/bootstrap-treeview.min.js}"></script>
+<script th:src="@{/js/fyxw/tree.js}"></script>
+</head>
+<body>
+	<!-- 主体内容 start -->
+	<div layout:fragment="content">
+		<div class="container pt">
+			<h4 class="mb">用户管理</h4>
+			<table id="userList" class="table table-striped"></table>
+		</div>
+		<!-- 角色弹窗 -->
+		<div class="modal fade" id="rolesModal" tabindex="-1" role="dialog"
+			aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" style="color: #337ab7;">角色列表</h4>
+					</div>
+					<div class="modal-body" style="height: 300px;overflow: scroll;">
+						<input type="hidden" name="account" id="account" />
+						<div id="tree"></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal"
+							onclick="saveRoles()">设置</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+		</div>
+		<script th:inline="javascript">
+			function statusFormatter(value,row, index) {
+				if(value=='N') {
+					return "正常";
+				} else if(value=='L'){
+					return "锁定";
+				} else {
+					return "注销";
+				}
+			}
+			function operateFormatter(value,row, index) {
+				var status = row.status;
+				var account = row.account;
+				var operateHtml = "<a href=\"/userMa/userDetail?account="+account+"\">查看</a>"
+						+"<a href='#' onclick=\"showRoleWin('"+account+"')\" style='margin-left:10px;'>角色设置</a>";
+				if([[${session.SPRING_SECURITY_CONTEXT.authentication.principal.account}]] != account) {
+					if(status=='N') {
+						operateHtml +="<a href='#' onclick=\"disabledUser('"+account+"')\" style='margin-left:10px;'>锁定</a>";
+					} else if(status=='L') {
+						operateHtml +="<a href='#' onclick=\"enabledUser('"+account+"')\" style='margin-left:10px;'>解锁</a>";
+					}	
+				}
+				return operateHtml;
+			}
+			function disabledUser(account) {
+				changeStatus(account,'/userMa/disabledUser');
+			}
+			function enabledUser(account) {
+				changeStatus(account,'/userMa/enabledUser');
+			}
+			function showRoleWin(account) {
+				$("#account").val(account);
+				$.ajax({
+					async : false,
+					type : "POST",
+					url : "/userMa/roleList",
+					data : {
+						account : account
+					},
+					dataType : "text",
+					success : function(data) {
+						var obj = eval('(' + data + ')');
+						$("#rolesModal").modal('show');
+						$('#tree').treeview({
+			                data: obj,//设置数据源
+			                showCheckbox: true,//启用复选框
+			                onNodeChecked: onNodeChecked,
+			                onNodeUnchecked: onNodeUnchecked
+			            });
+					},
+					error : function() {
+						$("#resultHint").html("好像哪里不对啊,一会再试试？");
+						$("#resultHintModal").modal('show');
+					}
+				});
+			}
+			function saveRoles() {
+				$("#rolesModal").modal('hide');
+				$("#loadingHint").html('角色设定中...');
+				$("#loadingModal").modal('show');
+				var roleCodes = '';
+				var list = $('#tree').treeview('getChecked', [ { silent: true } ]);
+				if(list){
+					$.each(list,function(name,value){
+						// 过滤选中的菜单组，只留菜单
+						roleCodes += value.code + ",";
+					});
+				}
+				$.ajax({
+					async : false,
+					type : "POST",
+					url : "/userMa/rolesSave",
+					data : {
+						roleCodes : roleCodes,
+						accountStr: $("#account").val()
+					},
+					dataType : "text",
+					success : function(data) {
+						var obj = eval('(' + data + ')');
+						if (obj.code == "success") {
+							$("#resultHint").html("好啦好啦，你再看看吧！");
+						} else {
+							$("#resultHint").html(obj.value);
+						}
+						$("#resultHintModal").modal('show');
+						$("#loadingModal").modal('hide');
+					},
+					error : function() {
+						$("#resultHint").html("好像哪里不对啊,一会再试试？");
+						$("#resultHintModal").modal('show');
+						$("#loadingModal").modal('hide');
+					}
+				});
+			}
+			function changeStatus(account,url) {
+				$("#loadingHint").html('状态变更中...');
+				$("#loadingModal").modal('show');
+				$.ajax({
+					async : false,
+					type : "POST",
+					url : url,
+					data : {
+						accountStr : account
+					},
+					dataType : "text",
+					success : function(data) {
+						var obj = eval('(' + data + ')');
+						if (obj.code == "success") {
+							$("#resultHint").html("好啦好啦，你再看看吧！");
+							$("#hintConfirm").click(function() {
+								window.location.reload();
+							});
+						} else {
+							$("#resultHint").html(obj.value);
+						}
+						$("#resultHintModal").modal('show');
+						$("#loadingModal").modal('hide');
+					},
+					error : function() {
+						$("#resultHint").html("好像哪里不对啊,一会再试试？");
+						$("#resultHintModal").modal('show');
+						$("#loadingModal").modal('hide');
+					}
+				});
+			}
+			$(function() {
+				$('#userList').bootstrapTable({
+				    url: '/userMa/getPage',
+				    method: 'POST',
+				    contentType : "application/x-www-form-urlencoded",
+				    pagination: true,
+				    sidePagination: "server",
+				    pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
+				    pageSize: 10,                     //每页的记录行数（*）
+				    queryParams : function (params) {
+				    	//这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
+				    	var temp = {   
+				    		pageSize: params.limit,                         //页面大小
+				    		pageNo: (params.offset / params.limit) + 1,   //页码
+				    	};
+				    	return temp;
+				    },
+				    columns: [{
+				        field: 'account',
+				        title: '账号'
+				    }, {
+				        field: 'nickname',
+				        title: '昵称'
+				    }, {
+				        field: 'mobile',
+				        title: '电话'
+				    },{
+				        field: 'email',
+				        title: '邮箱'
+				    },{
+				        field: 'status',
+				        title: '状态',
+				        formatter: statusFormatter
+				    },{
+				        field: 'id',
+				        title: '操作',
+				        formatter: operateFormatter,
+				    }, ]
+				});
+			})
+		</script>
+	</div>
+</body>
+</html>

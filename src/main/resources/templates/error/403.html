@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>403</title>
+<body>
+	<div layout:fragment="content">
+		<div class="row mt2 presentation">
+			<div class="centered">
+				<i class="icon ion-alert large-icon"></i>
+				<h1>这可是机密，可不是随便给人看的</h1>
+				<hr>
+			</div>
+			<div class="col-lg-6 col-lg-offset-3 centered">
+				<p>你权限不够哦，想看嘛...等你级别够了再说!</p>
+				<p class="mt">
+					<a href="/index" class="btn btn-lg btn-theme">先回首页再说</a>
+				</p>
+			</div>
+
+		</div>
+		<!-- /row -->
+	</div>
+</body>
+</html>

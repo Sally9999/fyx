@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>角色授权</title>
+<!-- bootstrap tree view css -->
+<link th:href="@{/css/bootstrap-treeview.min.css}" rel="stylesheet">
+<!-- bootstrap tree view js -->
+<script th:src="@{/js/bootstrap-treeview.min.js}"></script>
+<script th:src="@{/js/fyxw/tree.js}"></script>
+</head>
+<body>
+	<!-- 主体内容 start -->
+	<div layout:fragment="content">
+		<div style="float: none;"
+			class="col-lg-8 col-md-8 col-xs-12 col-lg-offset-2 col-md-offset-2 pt">
+			<div th:if="${role}">
+				<h4 th:text="${role.roleName}+'角色权限'"></h4>
+				<div id="tree"></div>
+				<div>
+					<button type="button" onclick="save()"
+						class="btn btn-primary btn-block btn-flat">保存设置</button>
+					<div style="text-align: right; margin: 10px auto;">
+						<a href="/role/roleManagement">返回</a>
+					</div>
+				</div>
+			</div>
+			<div th:unless="${role}">
+				<div style="text-align: center;" class="ptb">
+					<font color="red">sorry,你找的角色不翼而飞了...</font>
+				</div>
+				<button type="button"
+					onclick="javaScript:window.location.href='/role/roleManagement'"
+					class="btn btn-primary btn-block btn-flat">返回</button>
+			</div>
+		</div>
+		<script th:inline="javascript">
+		function save() {
+			$("#loadingHint").html("角色权限变更中...");
+			$("#loadingModal").modal('show');
+			var menuCodes = '';
+			var list = $('#tree').treeview('getChecked', [ { silent: true } ]);
+			if(list){
+				$.each(list,function(name,value){
+					// 过滤选中的菜单组，只留菜单
+					if(null != value.parentId) {
+						menuCodes += value.code + ",";
+					}
+				});
+			}
+			//保存
+			$.ajax({
+				async : false,
+				type : "POST",
+				url : "/role/authoritySave",
+				data : {
+					menuCodes : menuCodes,
+					roleCode : [[${role.roleCode}]],
+				},
+				dataType : "text",
+				success : function(data) {
+					var obj = eval('(' + data + ')');
+					if (obj.code == "success") {
+						$("#resultHint").html("设置好哒！");
+						$("#hintConfirm").click(function() {
+							window.location.href='/role/roleManagement';
+						});
+					} else {
+						$("#resultHint").html(obj.value);
+					}
+					$("#resultHintModal").modal('show');
+						$("#loadingModal").modal('hide');
+					},
+					error : function() {
+						$("#resultHint").html("好像哪里不对啊,一会再试试？");
+						$("#resultHintModal").modal('show');
+						$("#loadingModal").modal('hide');
+					}
+				});
+		}
+		$(function(){
+            // 设置菜单树
+            $('#tree').treeview({
+                data: [[${groupTree}]],//设置数据源
+                showCheckbox: true,//启用复选框
+                onNodeChecked: onNodeChecked,
+                onNodeUnchecked: onNodeUnchecked
+            });
+        });
+		</script>
+	</div>
+</body>
+</html>

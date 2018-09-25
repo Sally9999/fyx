@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsy.fyxw.dao.SystemConfigDao">
+	<sql id="columnsName">id,attr_key,attr_value,status,required,memo,gmt_create,gmt_modify
+	</sql>
+	<select id="getSystemConfigByKey"
+		parameterType="java.lang.String" resultType="java.lang.String">
+		select
+		attr_value
+		from
+		system_config where attr_key=#{attr_key} and status='N'
+	</select>
+	<sql id="searchCondition">
+		<if test="attrKey != null and attrKey !=''">
+			and attr_key = #{attrKey}
+		</if>
+		<if test="required != null and required != ''">
+			and required=#{required}
+		</if>
+		<if test="status != null and status != ''">
+			and status=#{status}
+		</if>
+	</sql>
+	<select id="getPage"
+		parameterType="com.wsy.fyxw.query.SystemConfigQuery"
+		resultType="com.wsy.fyxw.domain.SystemConfig">
+		select
+		<include refid="columnsName"></include>
+		from system_config
+		<where>
+			<include refid="searchCondition"></include>
+		</where>
+		order by
+		<if test="orderBy != null and orderBy !=''">
+			${orderBy}
+		</if>
+		<if test="orderBy == null or orderBy ==''">
+			gmt_modify
+		</if>
+		<if test="orderAsc != null and orderAsc !=''">
+			${orderAsc}
+		</if>
+		<if test="orderAsc == null or orderAsc ==''">
+			DESC
+		</if>
+		limit ${pageFirstItem},${pageSize}
+	</select>
+	<select id="getCount"
+		parameterType="com.wsy.fyxw.query.SystemConfigQuery" resultType="int">
+		select
+		count(1)
+		from system_config
+		<where>
+			<include refid="searchCondition"></include>
+		</where>
+	</select>
+	<select id="getByCode" parameterType="java.lang.String"
+		resultType="com.wsy.fyxw.domain.SystemConfig">
+		select
+		<include refid="columnsName"></include>
+		from system_config
+		where attr_key = #{attrKey}
+	</select>
+	<update id="changeStatusByCode"
+		parameterType="com.wsy.fyxw.domain.SystemConfig">
+		update system_config set gmt_modify=SYSDATE()
+		,status=#{status}
+		where attr_key = #{attrKey} and required='N'
+	</update>
+	<update id="update"
+		parameterType="com.wsy.fyxw.domain.SystemConfig">
+		update system_config set gmt_modify=SYSDATE()
+		<if test="attrValue != null and attrValue != ''">
+			,attr_value=#{attrValue}
+		</if>
+		<if test="status != null and status != ''">
+			,status=#{status}
+		</if>
+		where id=#{id}
+	</update>
+</mapper>

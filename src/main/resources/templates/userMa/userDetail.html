@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>用户详情</title>
+</head>
+<body>
+	<!-- 主体内容 start -->
+	<div layout:fragment="content">
+		<div style="float: none;"
+			class="col-lg-8 col-md-8 col-xs-12 col-lg-offset-2 col-md-offset-2 pt">
+			<h4>用户详情</h4>
+			<div th:if="${user}">
+				<div class="form-group has-feedback">
+					<strong>账号：</strong> <span th:text="${user.account}"></span>
+				</div>
+				<div class="form-group has-feedback">
+					<strong>昵称：</strong> <span th:text="${user.nickname}"></span>
+				</div>
+				<div class="form-group has-feedback">
+					<strong>电话：</strong> <span th:text="${user.mobile}"></span>
+				</div>
+				<div class="form-group has-feedback">
+					<strong>邮箱：</strong> <span th:text="${user.email}"></span>
+				</div>
+				<div class="form-group has-feedback">
+					<strong>状态：</strong> <span th:if="${user.status} eq 'N'"
+						th:text="正常"></span><span th:if="${user.status} eq 'L'"
+						th:text="锁定"></span><span th:if="${user.status} eq 'C'"
+						th:text="注销"></span>
+				</div>
+				<div>
+					<button type="button"
+						onclick="javaScript:window.location.href='/userMa/userManagement'"
+						class="btn btn-primary btn-block btn-flat">返回</button>
+				</div>
+			</div>
+			<div th:unless="${user}">
+				<div style="text-align: center;" class="ptb">
+					<font color="red">sorry,你找的用户不翼而飞了...</font>
+				</div>
+				<button type="button"
+					onclick="javaScript:window.location.href='/userMa/userManagement'"
+					class="btn btn-primary btn-block btn-flat">返回</button>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
