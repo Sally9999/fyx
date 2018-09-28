@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title th:text="${groupName}+'-菜单'"></title>
+</head>
+<body>
+	<!-- 主体内容 start -->
+	<div layout:fragment="content">
+		<div class="container pt">
+			<h4>
+				[[${groupName}]]-菜单<a
+					th:href="'/menu/menuCreation?groupCode='+${groupCode}"><i
+					class="icon ion-plus-round pull-right"
+					style="font-size: 30px; color: #337ab7;" title="创建菜单"></i></a>
+			</h4>
+			<input type="hidden" name="menuGroup" id="menuGroup"
+				th:value="${groupCode}" />
+			<div class="row mt" id="menuList">
+				<div class="col-md-12 centered" th:if="${query}"
+					th:fragment="menuList">
+					<div class="col-md-4 services-bordered menuInfo"
+						th:each="menu: ${query.resultItems}" th:id="${menu.menuCode}"
+						th:name="${menu.menuName}" style="cursor: pointer;">
+						<i th:class="'icon large-icon ' + ${menu.icon}"
+							th:if="${menu.icon}"></i> <i class="icon ion-document large-icon"
+							th:unless="${menu.icon}"></i>
+						<h4 th:text="${menu.menuName}"></h4>
+						<p th:switch="${menu.status}">
+							<span th:case="'N'" th:text="启用" style="color: green;"></span> <span
+								th:case="'D'" th:text="禁用" style="color: red;"></span>
+						</p>
+					</div>
+					<nav class="slides-navigation" style="margin: -50px;">
+						<a onclick="getPageData(1)" class="next"
+							th:if="${query.pageNo} lt ${query.totalPage}"
+							style="padding: 5px; background: #f0eded; cursor: pointer;">
+							<i class="fa fa-angle-right"></i>
+						</a> <a onclick="getPageData(-1)" class="prev"
+							th:if="${query.pageNo} gt 1"
+							style="padding: 5px; background: #f0eded; cursor: pointer;">
+							<i class="fa fa-angle-left"></i>
+						</a>
+					</nav>
+					<div class="col-md-12 centered mt mb">
+						<input type="hidden" name="pageNo" id="pageNo"
+							th:value="${query.pageNo}" /> <input type="hidden"
+							name="totalPage" id="totalPage" th:value="${query.totalPage}" />
+						<button type="button" onclick="back()"
+							class="btn btn-primary btn-flat"
+							style="margin: auto; width: 200px;">返&nbsp;&nbsp;回</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 操作提示 -->
+		<div class="modal fade" id="operateModal" tabindex="-1" role="dialog"
+			aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" style="color: #337ab7;">我猜你是想...</h4>
+					</div>
+					<div class="modal-body">
+						<input type="hidden" name="menuCode" id="menuCode" /> <input
+							type="hidden" name="menuName" id="menuName" />
+						<button type="button" class="btn btn-primary"
+							onclick="toMenuModify()"
+							style="margin: 10px auto; display: inherit;">无聊的修修改改</button>
+						<button type="button" class="btn btn-primary"
+							onclick="deleteConfirm()"
+							style="margin: 10px auto; display: inherit;">不要它了删了吧</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal"
+							style="margin: 10px auto; display: inherit;">其实啥也不想干</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+		</div>
+		<script type="text/javascript">
+			function getPageData(increase) {
+				var url = "/menu/getPage";
+				var pageNo = 1;
+				if ($("#pageNo").length > 0) {
+					pageNo = parseInt($("#pageNo").val()) + increase;
+				}
+				var totalPage = $("#totalPage").val();
+				var menuGroup = $("#menuGroup").val();
+				$("#menuList").load(url, {
+					menuGroup : menuGroup,
+					pageNo : pageNo,
+					totalPage : totalPage
+				}, function() {
+					$(".menuInfo").click(function() {
+						$("#menuCode").val($(this).attr("id"));
+						$("#menuName").val($(this).attr("name"));
+						$("#operateModal").modal("show");
+					});
+				});
+			}
+			function back() {
+				window.location.href = "/menuGroup/menuGroupManagement";
+			}
+			function toMenuModify() {
+				window.location.href = "/menu/menuSetting?menuCode="
+						+ $("#menuCode").val();
+			}
+			function deleteConfirm() {
+				$("#confirmHint").html(
+						'就确认下你不是手滑，确定是不想要【' + $("#menuName").val() + '】了对吧？');
+				$("#confirmModal").modal('show');
+				$("#operateModal").modal('hide');
+			}
+			function deleteMenu() {
+				$("#loadingHint").html('说删就删...');
+				$("#loadingModal").modal('show');
+				$("#confirmModal").modal('hide');
+				$.ajax({
+					async : false,
+					type : "POST",
+					url : "/menu/delete",
+					data : {
+						menuCode : $("#menuCode").val()
+					},
+					dataType : "text",
+					success : function(data) {
+						var obj = eval('(' + data + ')');
+						if (obj.code == "success") {
+							$("#resultHint").html("嗯，已经送它走了！");
+							$("#hintConfirm").click(function() {
+								window.location.reload();
+							});
+						} else {
+							$("#resultHint").html(obj.value);
+						}
+						$("#resultHintModal").modal('show');
+						$("#loadingModal").modal('hide');
+					},
+					error : function() {
+						$("#resultHint").html("好像哪里不对啊,一会再试试？");
+						$("#resultHintModal").modal('show');
+						$("#loadingModal").modal('hide');
+					}
+				});
+			}
+			$(function() {
+				getPageData(0);
+				$("#modalConfirmBtn").click(function() {
+					deleteMenu();
+				});
+			})
+		</script>
+	</div>
+</body>
+</html>
