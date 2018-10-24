@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body>
+	<div th:fragment="adminIndex">
+		<div class="container pt">
+			<div class="row mb">
+				<div class="col-md-12 centered">
+					<div class="col-md-4 services-bordered">
+						<i class="icon large-icon ion-person-stalker col-md-4"
+							style="color: #337ab7;"></i>
+						<div class="col-md-8">
+							<h4 id="userCount" style="color: red;">0</h4>
+							<p>总用户量(人)</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12 mt" id="userRegistTendency" style="height:300px;">
+				</div>
+			</div>
+		</div>
+		<script th:src="@{/js/echarts.min.js}"></script>
+		<script type="text/javascript">
+			function getData() {
+				$.ajax({
+					async : false,
+					type : "POST",
+					url : "/stat/getData",
+					dataType : "text",
+					success : function(data) {
+						var obj = eval('(' + data + ')');
+						$("#userCount").html(obj.userCount.count);
+						userRegistTendency(obj.userRegistTendency.xAxis,obj.userRegistTendency.data);
+						$("#loadingModal").modal('hide');
+					},
+					error : function() {
+						$("#resultHint").html("好像哪里不对啊,一会再试试？");
+						$("#resultHintModal").modal('show');
+					}
+				});
+			}
+			function userRegistTendency(xAxis,data) {
+				var myChart = echarts.init(document.getElementById('userRegistTendency'));
+		        // 指定图表的配置项和数据
+		        var option = {
+		            title: {
+		                text: '7日注册用户量走势图'
+		            },
+		            tooltip: {},
+		            legend: {
+		                data:['用户量']
+		            },
+		            xAxis: {
+		                data: xAxis
+		            },
+		            yAxis: {
+		            	minInterval : 1
+		            },
+		            series: [{
+		                name: '用户量',
+		                type: 'line',
+		                data: data
+		            }]
+		        };
+		        // 使用刚指定的配置项和数据显示图表。
+		        myChart.setOption(option);
+			}
+			$(function() {
+				getData();
+			})
+		</script>
+	</div>
+</body>
+</html>

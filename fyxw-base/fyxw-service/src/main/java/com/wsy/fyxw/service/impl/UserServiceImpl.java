@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.wsy.fyxw.dao.RelationUserRoleDao;
 import com.wsy.fyxw.dao.RoleDao;
 import com.wsy.fyxw.dao.UserDao;
+import com.wsy.fyxw.dao.factory.DaoFactory;
 import com.wsy.fyxw.domain.RelationUserRole;
 import com.wsy.fyxw.domain.ResultInfo;
 import com.wsy.fyxw.domain.Role;
@@ -34,21 +36,26 @@ import com.wsy.fyxw.util.LogUtil;
 @Service("userService")
 public class UserServiceImpl implements UserService {
 	Logger logger = LoggerFactory.getLogger(getClass());
-	@Autowired
 	private UserDao userDao;
-	@Autowired
 	private RoleDao roleDao;
 	@Autowired
 	private LogUtil logUtil;
-	@Autowired
 	private RelationUserRoleDao relationUserRoleDao;
+
+	@Autowired
+	public UserServiceImpl(DaoFactory daoFactory, @Value("${datasource.type}") String DATA_SOURCE_TYPE) {
+		super();
+		this.userDao = (UserDao) daoFactory.getDao(DATA_SOURCE_TYPE + "UserDao");
+		this.roleDao = (RoleDao) daoFactory.getDao(DATA_SOURCE_TYPE + "RoleDao");
+		this.relationUserRoleDao = (RelationUserRoleDao) daoFactory.getDao(DATA_SOURCE_TYPE + "RelationUserRoleDao");
+	}
 
 	/**
 	 * security登录验证调用
 	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userDao.getUserByAccount(username, EnumUserStatus.NORMAL.getCode());
+		User user = userDao.getUserByAccount(username, null);
 		if (user == null) {
 			throw new UsernameNotFoundException(username);
 		}
@@ -70,7 +77,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public int updateUser(User user) {
-		if (null == user || null == user.getId() || 0l == user.getId()) {
+		if (null == user || StringUtils.isBlank(user.getId())) {
 			return 0;
 		}
 		return userDao.update(user);
@@ -176,7 +183,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserQuery getUserPage(UserQuery query) {
-		int count = userDao.getCount(query);
+		long count = userDao.getCount(query);
 		ArrayList<User> list = userDao.getPage(query);
 		query.setTotalRecord(count);
 		query.setResultItems(list);

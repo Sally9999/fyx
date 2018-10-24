@@ -7,10 +7,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.wsy.fyxw.dao.RelationMenuRoleDao;
 import com.wsy.fyxw.dao.RoleDao;
+import com.wsy.fyxw.dao.factory.DaoFactory;
 import com.wsy.fyxw.domain.RelationMenuRole;
 import com.wsy.fyxw.domain.ResultInfo;
 import com.wsy.fyxw.domain.Role;
@@ -32,14 +34,19 @@ public class RoleServiceImpl implements RoleService {
 
 	@Autowired
 	private LogUtil logUtil;
-	@Autowired
 	private RoleDao roleDao;
-	@Autowired
 	private RelationMenuRoleDao relationMenuRoleDao;
+
+	@Autowired
+	public RoleServiceImpl(DaoFactory daoFactory, @Value("${datasource.type}") String DATA_SOURCE_TYPE) {
+		super();
+		this.roleDao = (RoleDao) daoFactory.getDao(DATA_SOURCE_TYPE + "RoleDao");
+		this.relationMenuRoleDao = (RelationMenuRoleDao) daoFactory.getDao(DATA_SOURCE_TYPE + "RelationMenuRoleDao");
+	}
 
 	@Override
 	public RoleQuery getRolePage(RoleQuery query) {
-		int count = roleDao.getCount(query);
+		long count = roleDao.getCount(query);
 		ArrayList<Role> list = roleDao.getPage(query);
 		query.setTotalRecord(count);
 		query.setResultItems(list);
@@ -59,7 +66,7 @@ public class RoleServiceImpl implements RoleService {
 	public ResultInfo saveRole(Role role) {
 		ResultInfo result = ResultUtil.setResultInfo(EnumCommonResult.FAILED, null);
 		EnumLogType logType = EnumLogType.ROLE_ADD;
-		if (null != role.getId() && 0 != role.getId()) {
+		if (StringUtils.isNotBlank(role.getId())) {
 			// 更新
 			if (roleDao.update(role) > 0) {
 				result = ResultUtil.setResultInfo(EnumCommonResult.SUCCESS, result);

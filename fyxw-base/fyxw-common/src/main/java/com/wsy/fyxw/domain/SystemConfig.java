@@ -1,28 +1,16 @@
 package com.wsy.fyxw.domain;
 
-import java.io.Serializable;
-
-public class SystemConfig implements Serializable {
+public class SystemConfig extends BaseDomain {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 882971997444617959L;
-	private Long id;
 	private String attrKey;
 	private String attrValue;
 	private String status;
-	private String operator;
 	private String required;
 	private String memo;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getAttrKey() {
 		return attrKey;
@@ -46,14 +34,6 @@ public class SystemConfig implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public String getOperator() {
-		return operator;
-	}
-
-	public void setOperator(String operator) {
-		this.operator = operator;
 	}
 
 	public String getRequired() {

@@ -1,8 +1,8 @@
 package com.wsy.fyxw.query;
 
-import java.io.Serializable;
+import com.wsy.fyxw.domain.RelationUserRole;
 
-public class RelationUserRoleQuery implements Serializable {
+public class RelationUserRoleQuery extends BaseQueryPage<RelationUserRole> {
 
 	/**
 	 * 

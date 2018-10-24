@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsy.fyxw.repository.MysqlUserRepository">
+	<sql id="columnsName">id,account,pwd,nickname,mobile,email,status,login_failed_times,gmt_create,gmt_modify
+	</sql>
+	<sql id="columnsNameWithoutPwd">id,account,'' as
+		pwd,nickname,mobile,email,status,login_failed_times,gmt_create,gmt_modify
+	</sql>
+	<select id="getUserByAccount"
+		parameterType="com.wsy.fyxw.query.UserQuery"
+		resultType="com.wsy.fyxw.domain.User">
+		select
+		<include refid="columnsName"></include>
+		from users_info where account=#{account}
+		<if test="status != null and status != ''">
+			and status=#{status}
+		</if>
+	</select>
+	<update id="update" parameterType="com.wsy.fyxw.domain.User">
+		update users_info set gmt_modify=SYSDATE()
+		<if test="nickname != null and nickname != ''">
+			,nickname=#{nickname}
+		</if>
+		<if test="mobile != null  and mobile != ''">
+			,mobile=#{mobile}
+		</if>
+		<if test="email != null  and email != ''">
+			,email=#{email}
+		</if>
+		<if test="status != null  and status != ''">
+			,status=#{status}
+		</if>
+		<if test="loginFailedTimes != null">
+			,login_failed_times=#{loginFailedTimes}
+		</if>
+		where id=#{id}
+	</update>
+	<insert id="add" parameterType="com.wsy.fyxw.domain.User">
+		insert into users_info (
+		<include refid="columnsName"></include>
+		) values
+		(null,#{account},#{pwd},#{nickname},#{mobile},#{email},#{status},#{loginFailedTimes},SYSDATE(),SYSDATE())
+	</insert>
+	<update id="changePwd" parameterType="java.util.Map">
+		update users_info set pwd=#{newPwd}, gmt_modify=SYSDATE() where
+		account = #{account}
+		<if test="orgPwd != null and orgPwd != ''"> and pwd=#{orgPwd}</if>
+	</update>
+	<sql id="searchCondition">
+		<if test="account != null and account !=''">
+			and account = #{account}
+		</if>
+		<if test="nickname != null and nickname != ''">
+			and nickname like concat('%', #{nickname},'%')
+		</if>
+		<if test="mobile != null and mobile != ''">
+			and mobile=#{mobile}
+		</if>
+		<if test="email != null and email != ''">
+			and email=#{email}
+		</if>
+		<if test="status != null and status != ''">
+			and status=#{status}
+		</if>
+	</sql>
+	<select id="getPage"
+		parameterType="com.wsy.fyxw.query.UserQuery"
+		resultType="com.wsy.fyxw.domain.User">
+		select
+		<include refid="columnsNameWithoutPwd"></include>
+		from users_info
+		<where>
+			<include refid="searchCondition"></include>
+		</where>
+		order by
+		<if test="orderBy != null and orderBy !=''">
+			${orderBy}
+		</if>
+		<if test="orderBy == null or orderBy ==''">
+			gmt_modify
+		</if>
+		<if test="orderAsc != null and orderAsc !=''">
+			${orderAsc}
+		</if>
+		<if test="orderAsc == null or orderAsc ==''">
+			DESC
+		</if>
+		limit ${pageFirstItem},${pageSize}
+	</select>
+	<select id="getCount"
+		parameterType="com.wsy.fyxw.query.UserQuery" resultType="long">
+		select
+		count(1)
+		from users_info
+		<where>
+			<include refid="searchCondition"></include>
+		</where>
+	</select>
+	<update id="changeStatusByAccount"
+		parameterType="com.wsy.fyxw.domain.User">
+		update users_info set gmt_modify=SYSDATE()
+		,status=#{status}
+		where account = #{account}
+	</update>
+	<resultMap type="java.util.Map" id="statMap">
+		<result column="date" jdbcType="VARCHAR" property="date" />
+		<result column="count" jdbcType="VARCHAR" property="count" />
+	</resultMap>
+	<select id="statUserRegistTendency" resultMap="statMap">
+		SELECT
+			a.*
+		FROM
+		(
+			(
+				SELECT
+					DATE_FORMAT(gmt_create, "%Y-%m-%d") AS date,
+					count(1) AS count
+				FROM
+					users_info,(select @days:=7) t
+				WHERE
+					<![CDATA[ 
+						DATE_FORMAT(gmt_create, "%Y-%m-%d") 
+						> 
+						DATE_FORMAT(DATE_SUB(SYSDATE(), INTERVAL @days DAY),"%Y-%m-%d") 
+					]]>
+					AND 
+					<![CDATA[
+						gmt_create 
+						<= 
+						SYSDATE()
+					]]>
+				GROUP BY date
+			)
+			UNION
+			(
+				SELECT
+					DATE_FORMAT(DATE_SUB(SYSDATE(), INTERVAL @days DAY), "%Y-%m-%d") AS date,
+					0 AS count
+				FROM
+					users_info
+				WHERE
+					<![CDATA[
+						DATE_SUB(SYSDATE(), INTERVAL (@days :=@days - 1) DAY)
+						<=
+						SYSDATE()
+					]]>
+			)
+		) a
+		GROUP BY a.date
+	</select>
+</mapper>

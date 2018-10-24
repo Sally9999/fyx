@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsy.fyxw.repository.MysqlRoleRepository">
+	<sql id="columnsName">r.id,r.role_code,r.role_name,r.type,r.status,r.gmt_create,r.gmt_modify
+	</sql>
+	<sql id="insertColumnsName">id,role_code,role_name,type,status,gmt_create,gmt_modify
+	</sql>
+	<select id="getRoleListByAccount"
+		parameterType="java.lang.String" resultType="com.wsy.fyxw.domain.Role">
+		select
+		<include refid="columnsName"></include>
+		from role_info r, relation_user_role ur where r.role_code =
+		ur.role_code and ur.account=#{account}
+		and r.status='N'
+	</select>
+	<insert id="add" parameterType="com.wsy.fyxw.domain.Role">
+		insert role_info (
+		<include refid="insertColumnsName"></include>
+		)
+		value
+		(null,#{roleCode},#{roleName},#{type},#{status},SYSDATE(),SYSDATE())
+	</insert>
+	<update id="update" parameterType="com.wsy.fyxw.domain.Role">
+		update role_info r set r.gmt_modify=SYSDATE()
+		<if test="roleName != null and roleName != ''">
+			,r.role_name=#{roleName}
+		</if>
+		<if test="type != null and type != ''">
+			,r.type=#{type}
+		</if>
+		<if test="status != null and status != ''">
+			,r.status=#{status}
+		</if>
+		where r.id=#{id}
+	</update>
+	<delete id="deleteByCode" parameterType="java.lang.String">
+		delete from role_info
+		where role_code=#{code}
+	</delete>
+	<sql id="searchCondition">
+		<if test="roleCode != null and roleCode !=''">
+			and r.role_code = #{roleCode}
+		</if>
+		<if test="roleName != null and roleName != ''">
+			and r.role_name like concat('%', #{roleName},'%')
+		</if>
+		<if test="type != null and type != ''">
+			and r.type=#{type}
+		</if>
+		<if test="status != null and status != ''">
+			and r.status=#{status}
+		</if>
+	</sql>
+	<select id="getPage"
+		parameterType="com.wsy.fyxw.query.RoleQuery"
+		resultType="com.wsy.fyxw.domain.Role">
+		select
+		<include refid="columnsName"></include>
+		from role_info r
+		<where>
+			<include refid="searchCondition"></include>
+		</where>
+		order by
+		<if test="orderBy != null and orderBy !=''">
+			${orderBy}
+		</if>
+		<if test="orderBy == null or orderBy ==''">
+			r.gmt_modify
+		</if>
+		<if test="orderAsc != null and orderAsc !=''">
+			${orderAsc}
+		</if>
+		<if test="orderAsc == null or orderAsc ==''">
+			DESC
+		</if>
+		limit ${pageFirstItem},${pageSize}
+	</select>
+	<select id="getCount"
+		parameterType="com.wsy.fyxw.query.RoleQuery" resultType="long">
+		select
+		count(1)
+		from role_info r
+		<where>
+			<include refid="searchCondition"></include>
+		</where>
+	</select>
+	<select id="getByCode" parameterType="java.lang.String"
+		resultType="com.wsy.fyxw.domain.Role">
+		select
+		<include refid="columnsName"></include>
+		from role_info r
+		where r.role_code = #{roleCode}
+	</select>
+	<update id="changeStatusByCode"
+		parameterType="com.wsy.fyxw.domain.Role">
+		update role_info r set r.gmt_modify=SYSDATE()
+		,r.status=#{status}
+		where r.role_code = #{roleCode}
+	</update>
+	<select id="getList"
+		parameterType="com.wsy.fyxw.query.RoleQuery"
+		resultType="com.wsy.fyxw.domain.Role">
+		select
+		<include refid="columnsName"></include>
+		<if test="account != null and account !=''">
+			,(select if(count(1)>0, 'Y','N') from relation_user_role
+			ur where ur.role_code= r.role_code and ur.account=#{account}) as
+			hasAuthority
+		</if>
+		from role_info r
+		<where>
+			<include refid="searchCondition"></include>
+		</where>
+		order by
+		<if test="orderBy != null and orderBy !=''">
+			${orderBy}
+		</if>
+		<if test="orderBy == null or orderBy ==''">
+			r.gmt_modify
+		</if>
+		<if test="orderAsc != null and orderAsc !=''">
+			${orderAsc}
+		</if>
+		<if test="orderAsc == null or orderAsc ==''">
+			DESC
+		</if>
+		limit ${pageFirstItem},${pageSize}
+	</select>
+</mapper>

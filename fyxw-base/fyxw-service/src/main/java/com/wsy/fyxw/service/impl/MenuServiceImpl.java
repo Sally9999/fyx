@@ -9,10 +9,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.wsy.fyxw.dao.MenuDao;
 import com.wsy.fyxw.dao.MenuGroupDao;
+import com.wsy.fyxw.dao.factory.DaoFactory;
 import com.wsy.fyxw.domain.Menu;
 import com.wsy.fyxw.domain.MenuGroup;
 import com.wsy.fyxw.domain.ResultInfo;
@@ -35,12 +37,17 @@ public class MenuServiceImpl implements MenuService {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Autowired
 	private MenuDao menuDao;
-	@Autowired
 	private MenuGroupDao menuGroupDao;
 	@Autowired
 	private LogUtil logUtil;
+
+	@Autowired
+	public MenuServiceImpl(DaoFactory daoFactory, @Value("${datasource.type}") String DATA_SOURCE_TYPE) {
+		super();
+		this.menuDao = (MenuDao) daoFactory.getDao(DATA_SOURCE_TYPE + "MenuDao");
+		this.menuGroupDao = (MenuGroupDao) daoFactory.getDao(DATA_SOURCE_TYPE + "MenuGroupDao");
+	}
 
 	/**
 	 * 通过角色获取菜单权限
@@ -50,9 +57,10 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public ArrayList<MenuGroup> getAuthorityByRoleList(ArrayList<String> roleCodeList) {
-		// TODO 添加缓存机制
 		// 查询菜单组
-		ArrayList<MenuGroup> groupList = menuGroupDao.getMenuGroupList(EnumCommonStatus.NORMAL.getCode());
+		MenuGroupQuery query = new MenuGroupQuery();
+		query.setStatus(EnumCommonStatus.NORMAL.getCode());
+		ArrayList<MenuGroup> groupList = menuGroupDao.getList(query);
 		if (CollectionUtils.isNotEmpty(groupList)) {
 			Iterator<MenuGroup> it = groupList.iterator();
 			while (it.hasNext()) {
@@ -82,7 +90,7 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public MenuGroupQuery getMenuGroupPage(MenuGroupQuery query) {
-		int count = menuGroupDao.getCount(query);
+		long count = menuGroupDao.getCount(query);
 		ArrayList<MenuGroup> list = menuGroupDao.getPage(query);
 		query.setTotalRecord(count);
 		query.setResultItems(list);
@@ -100,7 +108,7 @@ public class MenuServiceImpl implements MenuService {
 		if (StringUtils.isBlank(query.getMenuGroup())) {
 			logger.info("unfind menugroup");
 		}
-		int count = menuDao.getCount(query);
+		long count = menuDao.getCount(query);
 		ArrayList<Menu> list = menuDao.getPage(query);
 		query.setTotalRecord(count);
 		query.setResultItems(list);
@@ -141,7 +149,7 @@ public class MenuServiceImpl implements MenuService {
 	public ResultInfo saveMenuGroup(MenuGroup group) {
 		ResultInfo result = ResultUtil.setResultInfo(EnumCommonResult.FAILED, null);
 		EnumLogType logType = EnumLogType.MENU_GROUP_ADD;
-		if (null != group.getId() && 0 != group.getId()) {
+		if (StringUtils.isNotBlank(group.getId())) {
 			// 更新
 			if (menuGroupDao.update(group) > 0) {
 				result = ResultUtil.setResultInfo(EnumCommonResult.SUCCESS, result);
@@ -170,7 +178,7 @@ public class MenuServiceImpl implements MenuService {
 	public ResultInfo saveMenu(Menu menu) {
 		ResultInfo result = ResultUtil.setResultInfo(EnumCommonResult.FAILED, null);
 		EnumLogType logType = EnumLogType.MENU_ADD;
-		if (null != menu.getId() && 0 != menu.getId()) {
+		if (StringUtils.isNotBlank(menu.getId())) {
 			// 更新
 			if (menuDao.update(menu) > 0) {
 				result = ResultUtil.setResultInfo(EnumCommonResult.SUCCESS, result);
@@ -238,7 +246,6 @@ public class MenuServiceImpl implements MenuService {
 	 */
 	@Override
 	public ArrayList<MenuGroupTreeDto> getMenuGroupWithRole(String roleCode) {
-
 		ArrayList<MenuGroupTreeDto> groupTreeList = new ArrayList<MenuGroupTreeDto>();
 		MenuGroupQuery groupQuery = new MenuGroupQuery();
 		groupQuery.setStatus(EnumCommonStatus.NORMAL.getCode());

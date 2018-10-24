@@ -1,15 +1,11 @@
 package com.wsy.fyxw.domain;
 
-import java.io.Serializable;
-import java.util.Date;
-
-public class Menu implements Serializable {
+public class Menu extends BaseDomain {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7550459841978870434L;
-	private Long id;
 	private String menuGroup;
 	private String menuCode;
 	private String menuName;
@@ -17,20 +13,8 @@ public class Menu implements Serializable {
 	private String url;
 	private String status;
 	private Integer sort;
-	private Date gmtCreate;
-	private Date gmtModify;
 	private String hasAuthority;
-	// 用于日志记录
-	private String operator;
 	private String roleCode;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getMenuGroup() {
 		return menuGroup;
@@ -88,36 +72,12 @@ public class Menu implements Serializable {
 		this.sort = sort;
 	}
 
-	public Date getGmtCreate() {
-		return gmtCreate;
-	}
-
-	public void setGmtCreate(Date gmtCreate) {
-		this.gmtCreate = gmtCreate;
-	}
-
-	public Date getGmtModify() {
-		return gmtModify;
-	}
-
-	public void setGmtModify(Date gmtModify) {
-		this.gmtModify = gmtModify;
-	}
-
 	public String getHasAuthority() {
 		return hasAuthority;
 	}
 
 	public void setHasAuthority(String hasAuthority) {
 		this.hasAuthority = hasAuthority;
-	}
-
-	public String getOperator() {
-		return operator;
-	}
-
-	public void setOperator(String operator) {
-		this.operator = operator;
 	}
 
 	public String getRoleCode() {

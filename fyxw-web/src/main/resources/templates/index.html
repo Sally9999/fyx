@@ -12,14 +12,12 @@
 <body>
 	<!-- 主体内容 start -->
 	<div layout:fragment="content">
-		<div id="main" th:unless="${setNickname}">
-		<div><b class="nickNameStr"></b>欢迎来到风音雪的世界，精彩内容稍后呈现...</div>
-			<div sec:authorize="hasRole('ROLE_admin')">
-				<p>你是管理员</p>
-			</div>
+		<div sec:authorize="!hasRole('ROLE_admin')">
+			<b class="nickNameStr"></b>欢迎来到风音雪的世界，精彩内容稍后呈现...
 		</div>
-		<script type="text/javascript">
-		</script>
+		<div sec:authorize="hasRole('ROLE_admin')">
+			<div th:include="adminIndex :: adminIndex"></div>
+		</div>
 	</div>
 </body>
 </html>

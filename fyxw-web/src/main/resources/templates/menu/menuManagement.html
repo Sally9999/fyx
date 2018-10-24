@@ -28,8 +28,8 @@
 						th:each="menu: ${query.resultItems}" th:id="${menu.menuCode}"
 						th:name="${menu.menuName}" style="cursor: pointer;">
 						<i th:class="'icon large-icon ' + ${menu.icon}"
-							th:if="${menu.icon}"></i> <i class="icon ion-document large-icon"
-							th:unless="${menu.icon}"></i>
+							th:if="${menu.icon} ne ''"></i> <i class="icon ion-document large-icon"
+							th:unless="${menu.icon} ne ''"></i>
 						<h4 th:text="${menu.menuName}"></h4>
 						<p th:switch="${menu.status}">
 							<span th:case="'N'" th:text="启用" style="color: green;"></span> <span

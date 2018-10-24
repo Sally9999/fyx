@@ -75,7 +75,7 @@ public class MenuAction extends BaseAction {
 		model.addAttribute("groupList", query.getResultItems());
 		return "menu/menuAdd";
 	}
-	
+
 	/**
 	 * 查询菜单分页数据
 	 * 
@@ -93,6 +93,7 @@ public class MenuAction extends BaseAction {
 
 	/**
 	 * 更新或创建菜单
+	 * 
 	 * @param user
 	 * @param menu
 	 * @return
@@ -106,6 +107,7 @@ public class MenuAction extends BaseAction {
 
 	/**
 	 * 删除菜单
+	 * 
 	 * @param user
 	 * @param menu
 	 * @return

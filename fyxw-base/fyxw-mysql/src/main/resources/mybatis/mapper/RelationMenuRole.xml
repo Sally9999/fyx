@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsy.fyxw.repository.MysqlRelationMenuRoleRepository">
+	<sql id="columnsName">r.id,r.menu_code,r.role_code,r.gmt_create,r.gmt_modify
+	</sql>
+	<sql id="insertColumnsName">id,menu_code,role_code,gmt_create,gmt_modify
+	</sql>
+	<select id="getRelationMenuRoleList"
+		parameterType="com.wsy.fyxw.query.RelationMenuRoleQuery"
+		resultType="com.wsy.fyxw.domain.RelationMenuRole">
+		select
+		<include refid="columnsName"></include>
+		from relation_menu_role r
+		<where>
+			<if test="roleCode != null and roleCode !=''">
+				and r.role_code = #{roleCode}
+			</if>
+			<if test="menuCode != null and menuCode !=''">
+				and r.menu_code = #{menuCode}
+			</if>
+		</where>
+	</select>
+	<insert id="insertBatch"
+		parameterType="com.wsy.fyxw.domain.RelationMenuRole">
+		insert relation_menu_role (
+		<include refid="insertColumnsName"></include>
+		)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(null,#{item.menuCode},#{item.roleCode},SYSDATE(),SYSDATE())
+		</foreach>
+	</insert>
+	<delete id="deleteBatch"
+		parameterType="com.wsy.fyxw.domain.RelationMenuRole">
+		delete from relation_menu_role where id in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item.id}
+		</foreach>
+	</delete>
+</mapper>

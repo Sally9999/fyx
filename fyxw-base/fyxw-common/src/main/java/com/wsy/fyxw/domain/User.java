@@ -1,7 +1,6 @@
 package com.wsy.fyxw.domain;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,31 +10,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.wsy.fyxw.enums.EnumUserStatus;
 
-public class User implements UserDetails {
+public class User extends BaseDomain implements UserDetails {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -941454743555078051L;
-	private Long id;
 	private String account;
 	private String pwd;
 	private String nickname;
 	private String mobile;
 	private String email;
 	private String status;
-	private Date gmtCreate;
-	private Date gmtModify;
 	private Integer loginFailedTimes;
 	private List<GrantedAuthority> authorities;
-	private String operator;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getAccount() {
 		return account;
@@ -85,22 +72,6 @@ public class User implements UserDetails {
 		this.status = status;
 	}
 
-	public Date getGmtCreate() {
-		return gmtCreate;
-	}
-
-	public void setGmtCreate(Date gmtCreate) {
-		this.gmtCreate = gmtCreate;
-	}
-
-	public Date getGmtModify() {
-		return gmtModify;
-	}
-
-	public void setGmtModify(Date gmtModify) {
-		this.gmtModify = gmtModify;
-	}
-
 	public Integer getLoginFailedTimes() {
 		return loginFailedTimes;
 	}
@@ -146,14 +117,6 @@ public class User implements UserDetails {
 
 	public void setAuthorities(List<GrantedAuthority> authorities) {
 		this.authorities = authorities;
-	}
-
-	public String getOperator() {
-		return operator;
-	}
-
-	public void setOperator(String operator) {
-		this.operator = operator;
 	}
 
 }

@@ -14,7 +14,7 @@ public class BaseQueryPage<T> implements Serializable {
 	private static final long serialVersionUID = -1409129456280297147L;
 	private Integer pageNo = 1;
 	private Integer pageSize = 10;
-	private Integer totalRecord;
+	private Long totalRecord;
 	private Integer totalPage;
 	private Integer pageFirstItem;
 	private String orderBy;
@@ -44,17 +44,17 @@ public class BaseQueryPage<T> implements Serializable {
 		this.pageSize = pageSize;
 	}
 
-	public Integer getTotalRecord() {
+	public Long getTotalRecord() {
 		return totalRecord;
 	}
 
-	public void setTotalRecord(Integer totalRecord) {
+	public void setTotalRecord(Long totalRecord) {
 		this.totalRecord = totalRecord;
 		this.setTotalPage();
 	}
 
 	public void setTotalPage() {
-		this.totalPage = NumberUtil.divide(this.totalRecord, this.pageSize, BigDecimal.ROUND_CEILING);
+		this.totalPage = NumberUtil.divide(this.totalRecord.intValue(), this.pageSize, BigDecimal.ROUND_CEILING);
 	}
 
 	public Integer getTotalPage() {

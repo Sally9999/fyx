@@ -20,4 +20,13 @@ public interface LogService {
 	 * @return
 	 */
 	public Long getLogCount(LogInfoQuery query);
+	
+	/**
+	 * 分页查日志列表
+	 * 
+	 * @param query
+	 * @return
+	 */
+	public LogInfoQuery getLogPage(LogInfoQuery query);
+
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wsy.fyxw.repository.MysqlLogRepository">
+	<sql id="columnsName">id,account,type,result,message,operator,gmt_create,gmt_modify</sql>
+	<select id="getList"
+		parameterType="com.wsy.fyxw.query.LogInfoQuery"
+		resultType="com.wsy.fyxw.domain.LogInfo">
+		select
+		<include refid="columnsName"></include>
+		from log_info
+		<where>
+			<if test="account != null and account != ''">
+				account = #{account}
+			</if>
+			<if test="result != null and result != ''">
+				and result = #{result}
+			</if>
+			<if test="type != null and type != ''">
+				and type = #{type}
+			</if>
+			<if test="operator != null and operator != ''">
+				and operator=#{operator}
+			</if>
+		</where>
+	</select>
+	<insert id="add" parameterType="com.wsy.fyxw.domain.LogInfo">
+		insert into log_info (
+		<include refid="columnsName"></include>
+		) values
+		(null,#{account},#{type},#{result},#{message},#{operator},SYSDATE(),SYSDATE())
+	</insert>
+	<select id="getCount"
+		parameterType="com.wsy.fyxw.query.LogInfoQuery" resultType="long">
+		select
+		count(1)
+		from log_info
+		<where>
+			<if test="account != null and account != ''">
+				account = #{account}
+			</if>
+			<if test="result != null and result != ''">
+				and result = #{result}
+			</if>
+			<if test="type != null and type != ''">
+				and type = #{type}
+			</if>
+			<if test="operator != null and operator != ''">
+				and operator=#{operator}
+			</if>
+		</where>
+	</select>
+</mapper>

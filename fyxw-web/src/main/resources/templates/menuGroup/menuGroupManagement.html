@@ -25,8 +25,8 @@
 						th:each="group: ${query.resultItems}" th:id="${group.groupCode}"
 						th:name="${group.groupName}" style="cursor: pointer;">
 						<i th:class="'icon large-icon ' + ${group.icon}"
-							th:if="${group.icon}"></i> <i class="icon ion-folder large-icon"
-							th:unless="${group.icon}"></i>
+							th:if="${group.icon} ne ''"></i> <i class="icon ion-folder large-icon"
+							th:unless="${group.icon} ne ''"></i>
 						<h4 th:text="${group.groupName}"></h4>
 						<p th:switch="${group.status}">
 							<span th:case="'N'" th:text="启用" style="color: green;"></span> <span

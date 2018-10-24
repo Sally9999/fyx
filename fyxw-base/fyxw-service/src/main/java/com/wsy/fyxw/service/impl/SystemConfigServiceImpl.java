@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.wsy.fyxw.dao.SystemConfigDao;
+import com.wsy.fyxw.dao.factory.DaoFactory;
 import com.wsy.fyxw.domain.ResultInfo;
 import com.wsy.fyxw.domain.SystemConfig;
 import com.wsy.fyxw.enums.EnumCommonResult;
@@ -24,13 +26,18 @@ import com.wsy.fyxw.util.ResultUtil;
 @Service("systemConfigService")
 public class SystemConfigServiceImpl implements SystemConfigService {
 
-	@Autowired
 	private SystemConfigDao systemConfigDao;
 	@Autowired
 	private LogUtil logUtil;
 	@Autowired
 	private RedisUtil redisUtil;
 	private static final String GROUP = "SYSTEM_CONFIG";
+
+	@Autowired
+	public SystemConfigServiceImpl(DaoFactory daoFactory, @Value("${datasource.type}") String DATA_SOURCE_TYPE) {
+		super();
+		this.systemConfigDao = (SystemConfigDao) daoFactory.getDao(DATA_SOURCE_TYPE + "SystemConfigDao");
+	}
 
 	@Override
 	@Cacheable(value = GROUP, key = "#p0")
@@ -40,7 +47,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
 	@Override
 	public SystemConfigQuery getConfigPage(SystemConfigQuery query) {
-		int count = systemConfigDao.getCount(query);
+		long count = systemConfigDao.getCount(query);
 		ArrayList<SystemConfig> list = systemConfigDao.getPage(query);
 		query.setTotalRecord(count);
 		query.setResultItems(list);
@@ -51,7 +58,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 	public ResultInfo save(SystemConfig config) {
 		ResultInfo result = ResultUtil.setResultInfo(EnumCommonResult.FAILED, null);
 		EnumLogType logType = EnumLogType.SYSTEM_CONFIG_CHANGE;
-		if (null != config.getId() && 0 != config.getId()) {
+		if (StringUtils.isNotBlank(config.getId())) {
 			// 更新,状态设为启用
 			config.setStatus(EnumCommonStatus.NORMAL.getCode());
 			if (systemConfigDao.update(config) > 0) {

@@ -35,7 +35,8 @@ public class UserAction extends BaseAction {
 			// 更新session
 			sessionUtil.updateSession(user, request);
 			// 记日志
-			logUtil.writeLogCommon(user.getAccount(), EnumLogType.NICKNAME_SET.getCode(), user.getAccount(), EnumCommonResult.SUCCESS);
+			logUtil.writeLogCommon(user.getAccount(), EnumLogType.NICKNAME_SET.getCode(), user.getAccount(),
+					EnumCommonResult.SUCCESS);
 			return new ResultInfo(EnumUserResult.SUCCESS.getCode(), EnumUserResult.SUCCESS.getValue());
 		}
 		return new ResultInfo(EnumUserResult.FAILED.getCode(), EnumUserResult.FAILED.getValue());
@@ -43,10 +44,10 @@ public class UserAction extends BaseAction {
 
 	@PostMapping("user/changePwd")
 	public ResultInfo changePassword(User user, @RequestParam("newPwd") String newPwd,
-			@RequestParam("orgPwd") String orgPwd,HttpServletRequest request) {
+			@RequestParam("orgPwd") String orgPwd, HttpServletRequest request) {
 		if (StringUtils.equals(user.getPwd(), orgPwd)) {
 			ResultInfo result = userService.changePwd(user, newPwd, true);
-			if(StringUtils.equals(result.getCode(), EnumCommonResult.SUCCESS.getCode())) {
+			if (StringUtils.equals(result.getCode(), EnumCommonResult.SUCCESS.getCode())) {
 				// 更新session
 				user.setPwd(newPwd);
 				sessionUtil.updateSession(user, request);

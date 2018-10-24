@@ -55,11 +55,17 @@
 		</div>
 		<div th:include="common/iconList :: iconList"></div>
 		<script type="text/javascript">
+			var regu =/^\d*$/;
+			var sortReg = new RegExp(regu);
 			function submitEnable() {
 				if ($("#groupCode").val() == "" || $("#groupName").val() == ""
 						|| $("#status").val() == ""
 						|| $("#sort").val() == "") {
 					$('#submit').attr('disabled', "true");
+				} else if(!sortReg.test($("#sort").val())) {
+					$('#submit').attr('disabled', "true");
+					$("#resultHint").html("排序号需要数字哦！");
+					$("#resultHintModal").modal('show');
 				} else {
 					$('#submit').removeAttr("disabled");
 				}

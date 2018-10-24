@@ -54,7 +54,7 @@ public class MenuGroupAction extends BaseAction {
 		model.addAttribute("group", group);
 		return "menuGroup/groupDetail";
 	}
-	
+
 	/**
 	 * 查询菜单组分页数据
 	 * 
@@ -72,6 +72,7 @@ public class MenuGroupAction extends BaseAction {
 
 	/**
 	 * 更新或创建菜单组
+	 * 
 	 * @param user
 	 * @param group
 	 * @return
@@ -83,9 +84,9 @@ public class MenuGroupAction extends BaseAction {
 		return menuService.saveMenuGroup(group);
 	}
 
-
 	/**
 	 * 删除菜单组
+	 * 
 	 * @param user
 	 * @param group
 	 * @return

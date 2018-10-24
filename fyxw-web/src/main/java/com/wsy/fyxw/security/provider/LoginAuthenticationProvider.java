@@ -23,7 +23,7 @@ import com.wsy.fyxw.util.SystemConfigUtil;
 @Component("authenticationProvider")
 public class LoginAuthenticationProvider extends DaoAuthenticationProvider {
 
-	@Autowired(required=false)
+	@Autowired(required = false)
 	private UserService userDetailsService;
 
 	@Autowired
@@ -99,8 +99,8 @@ public class LoginAuthenticationProvider extends DaoAuthenticationProvider {
 					messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", message));
 		}
 	}
-	
+
 	protected void doAfterPropertiesSet() throws Exception {
-		
+
 	}
 }
