@@ -16,6 +16,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.wsy</groupId>
+			<artifactId>fyxw-dao</artifactId>
+			<version>${fyxw.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.wsy</groupId>
 			<artifactId>fyxw-mysql</artifactId>
 			<version>${fyxw.version}</version>
 		</dependency>
