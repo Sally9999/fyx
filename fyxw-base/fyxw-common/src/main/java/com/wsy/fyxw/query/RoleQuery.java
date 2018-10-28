@@ -8,20 +8,11 @@ public class RoleQuery extends BaseQueryPage<Role> {
 	 * 
 	 */
 	private static final long serialVersionUID = 6892535820458957764L;
-	private Long id;
 	private String roleCode;
 	private String roleName;
 	private String status;
 	private String type;
 	private String account;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getRoleCode() {
 		return roleCode;

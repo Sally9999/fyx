@@ -28,6 +28,7 @@ import com.wsy.fyxw.enums.EnumDefaultRoleType;
 import com.wsy.fyxw.enums.EnumLogType;
 import com.wsy.fyxw.enums.EnumUserResult;
 import com.wsy.fyxw.enums.EnumUserStatus;
+import com.wsy.fyxw.mq.sender.MqSender;
 import com.wsy.fyxw.query.RelationUserRoleQuery;
 import com.wsy.fyxw.query.UserQuery;
 import com.wsy.fyxw.service.UserService;
@@ -38,9 +39,11 @@ public class UserServiceImpl implements UserService {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	private UserDao userDao;
 	private RoleDao roleDao;
+	private RelationUserRoleDao relationUserRoleDao;
 	@Autowired
 	private LogUtil logUtil;
-	private RelationUserRoleDao relationUserRoleDao;
+	@Autowired
+	private MqSender mqSender;
 
 	@Autowired
 	public UserServiceImpl(DaoFactory daoFactory, @Value("${datasource.type}") String DATA_SOURCE_TYPE) {
@@ -106,6 +109,8 @@ public class UserServiceImpl implements UserService {
 					relation.setAccount(user.getAccount());
 					relation.setRoleCode(EnumDefaultRoleType.COMMON.getCode());
 					relationUserRoleDao.add(relation);
+					// 注册后续操作
+					mqSender.sendRegist(user.getAccount());
 				}
 			} catch (Exception e) {
 				logger.error(">>>>>>>>>>>createUser failed:{}", e.getMessage());

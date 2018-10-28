@@ -8,17 +8,8 @@ public class RelationUserRoleQuery extends BaseQueryPage<RelationUserRole> {
 	 * 
 	 */
 	private static final long serialVersionUID = 612098563167444155L;
-	private Long id;
 	private String account;
 	private String roleCode;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getAccount() {
 		return account;

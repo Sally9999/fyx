@@ -7,21 +7,12 @@ public class UserQuery extends BaseQueryPage<User> {
 	 * 
 	 */
 	private static final long serialVersionUID = -9027155927299038226L;
-	private Long id;
 	private String account;
 	private String pwd;
 	private String nickname;
 	private String mobile;
 	private String email;
 	private String status;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getAccount() {
 		return account;

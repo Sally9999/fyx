@@ -16,7 +16,33 @@
 				th:object="${session.SPRING_SECURITY_CONTEXT.authentication.principal}">
 				<a class="fm-button nickNameStr" href="#" th:text="*{nickname}?:*{account}"></a>
 			</div>
+			<div th:if="${session.SPRING_SECURITY_CONTEXT}"
+				class="menu-navbar pull-right" style="padding-top: 5px;display:flex;">
+				<i class="icon ion-email" style="font-size: 30px;"></i>
+				<div class="unreadMsg" id="unreadMsg"></div>
+			</div>
 		</div>
+		<script th:inline="javascript">
+			function getUnreadMsg() {
+				$.ajax({
+					async : false,
+					type : "POST",
+					url : "/getUnreadMsg",
+					success : function(data) {
+						if(null != data && 0 != data){
+							$("#unreadMsg").html(data);
+						} else {
+							$("#unreadMsg").hide();
+						}
+					}
+				});
+			}
+			$(function() {
+				if([[${session.SPRING_SECURITY_CONTEXT}]]){
+					getUnreadMsg();
+				}
+			})
+		</script>
 	</header>
 </body>
 </html>

@@ -8,19 +8,10 @@ public class SystemConfigQuery extends BaseQueryPage<SystemConfig> {
 	 * 
 	 */
 	private static final long serialVersionUID = 2764754741305803890L;
-	private Long id;
 	private String attrKey;
 	private String attrValue;
 	private String status;
 	private String required;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getAttrKey() {
 		return attrKey;

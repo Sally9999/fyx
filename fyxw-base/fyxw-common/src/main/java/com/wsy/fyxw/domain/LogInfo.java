@@ -42,4 +42,9 @@ public class LogInfo extends BaseDomain {
 		this.message = message;
 	}
 
+	@Override
+	public String toString() {
+		return "LogInfo [account=" + account + ", type=" + type + ", result=" + result + ", message=" + message + "]";
+	}
+
 }

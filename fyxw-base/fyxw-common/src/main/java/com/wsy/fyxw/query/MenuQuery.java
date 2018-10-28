@@ -10,21 +10,12 @@ public class MenuQuery extends BaseQueryPage<Menu> {
 	 * 
 	 */
 	private static final long serialVersionUID = 8311951415932575470L;
-	private Long id;
 	private String menuGroup;
 	private String menuCode;
 	private String menuName;
 	private String status;
 	private String roleCode;
 	private ArrayList<String> roleCodeList;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getMenuGroup() {
 		return menuGroup;

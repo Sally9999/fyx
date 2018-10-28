@@ -7,18 +7,9 @@ public class MenuGroupQuery extends BaseQueryPage<MenuGroup> {
 	 * 
 	 */
 	private static final long serialVersionUID = 687563729099330810L;
-	private Long id;
 	private String groupCode;
 	private String groupName;
 	private String status;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getGroupCode() {
 		return groupCode;

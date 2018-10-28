@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum EnumLogType {
 	// 普通用户日志
 	LOGIN("login", "登录日志"),
+	REGIST("regist", "注册"),
 	USER_INFO_CHANGED("userInfoChanged","会员信息修改"),
 	NICKNAME_SET("nicknameSet","昵称设置"),
 	MOBILE_SET("mobileSet","手机设置"),

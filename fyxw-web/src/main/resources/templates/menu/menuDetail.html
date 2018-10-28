@@ -40,7 +40,7 @@
 				<div class="form-group has-feedback">
 					<strong>图标：</strong>
 					<button type="button" onclick="choseIcon()" class="btn btn-primary"
-						th:style="${menu.icon}?'display:none;':'display:inline;'"
+						th:style="${menu.icon} ne ''?'display:none;':'display:inline;'"
 						id="choseIconBtn">选择</button>
 					<i th:class="'icon ' + ${menu.icon}" id="iconImg"
 						th:display="${menu.icon}" onclick="choseIcon()"

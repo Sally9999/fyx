@@ -8,6 +8,7 @@ import com.wsy.fyxw.domain.User;
 import com.wsy.fyxw.enums.EnumCommonResult;
 import com.wsy.fyxw.enums.EnumLogType;
 import com.wsy.fyxw.enums.EnumUserResult;
+import com.wsy.fyxw.mq.sender.MqSender;
 import com.wsy.fyxw.query.LogInfoQuery;
 import com.wsy.fyxw.service.LogService;
 
@@ -16,6 +17,9 @@ public class LogUtil {
 
 	@Autowired
 	private LogService logService;
+
+	@Autowired
+	private MqSender mqSender;
 
 	/**
 	 * 写入登录日志
@@ -29,7 +33,7 @@ public class LogUtil {
 		log.setType(EnumLogType.LOGIN.getCode());
 		log.setResult(result.getCode());
 		log.setMessage(result.getValue());
-		logService.writeLog(log);
+		mqSender.sendLog(log);
 	}
 
 	/**
@@ -63,11 +67,12 @@ public class LogUtil {
 		log.setResult(result.getCode());
 		log.setMessage(result.getValue());
 		log.setOperator(operator);
-		logService.writeLog(log);
+		mqSender.sendLog(log);
 	}
-	
+
 	/**
 	 * 通用成功日志
+	 * 
 	 * @param account
 	 * @param logType
 	 * @param operator
@@ -80,6 +85,6 @@ public class LogUtil {
 		log.setResult(EnumCommonResult.SUCCESS.getCode());
 		log.setMessage(message);
 		log.setOperator(operator);
-		logService.writeLog(log);
+		mqSender.sendLog(log);
 	}
 }
